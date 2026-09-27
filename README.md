@@ -19,6 +19,28 @@ This project seeks to answer:
 	- Average debt as a percentage of median income
 - Are certain income groups disproportionately affected?
 
+What an answer could look like:
+
+TUITION VS INCOME OVER TIME (LINE CHART)
+Income ↑
+$80k |                         ________
+$70k |                 _______/ 
+$60k |        ________/ 
+$50k |_______/ 
+$40k |
+       2000   2005   2010   2015   2020   2025
+
+Tuition ↑
+$12k |                       __________
+$10k |                ______/
+ $8k |         ______/
+ $6k |  ______/
+ $4k |
+
+Interpretation: Tuition rises faster than income, leading to a decline in affordability
+
+
+
 ## Self Assessment and Reflection
 
 <!-- Edit the following section with your self assessment and reflection -->
