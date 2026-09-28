@@ -14,7 +14,7 @@ def load_loan_debt(api_key):
     return debt.groupby(debt.index).mean().reset_index().rename(columns={'index':'Year'})
 
 def load_income(api_key):
-    url = f"https://api.census.gov/data/2022/acs/acs1?get=NAME,B19013_001E&for=us:*&key={api_key}"
+    url = f"https://api.census.gov/data/2022/acs/acs1?get=NAME,B19013_001E&for=us:*&key=a75febdcb393c10eeea6eeb3840a4b790e801c1f"
     response = requests.get(url).json()
     df = pd.DataFrame(response[1:], columns=['Name','Median_Income','us'])
     df['Median_Income'] = df['Median_Income'].astype(int)
