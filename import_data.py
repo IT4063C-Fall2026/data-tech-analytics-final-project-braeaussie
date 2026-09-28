@@ -5,10 +5,10 @@ from fredapi import Fred
 import requests
 
 def load_tuition():
-    return pd.read_excel("data/tuition.xlsx")
+    return pd.read_excel("data/TrendsinCollegePricing2025.xlsx")
 
 def load_loan_debt(api_key):
-    fred = Fred(api_key=api_key)
+    fred = Fred(api_key="b1cd19d8927afcba01292e38a5f5f0e3")
     debt = fred.get_series('SLOAS').to_frame(name='Student_Loan_Debt')
     debt.index = debt.index.year
     return debt.groupby(debt.index).mean().reset_index().rename(columns={'index':'Year'})
