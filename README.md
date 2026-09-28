@@ -1,7 +1,49 @@
-# Final-Project-Template
+# The Impact of Rising Tuition on Student Loan Debt
 <!-- Edit the title above with your project title -->
 
 ## Project Overview
+How have rising tuition costs impacted student loan debt over the years, based on average student/household income?
+
+Higher education costs in the United States have risen steadily for decades, outpacing wage growth and household income. As tuition increases, students rely more heavily on loans, leading to long-term financial strain, delayed homeownership, reduced savings, and widening socioeconomic gaps. This project aims to address the core problem: Is the growth in student loan debt primarily driven by rising tuition, stagnant income, or both? How has affordability changed over time?
+
+This topic is important because student loan debt exceeds $1.8 trillion nationally (https://educationdata.org/student-loan-debt-statistics). Tuition appears to have grown faster than inflation and median household income. Policymakers, universities, and families need evidence-based insight into affordability trends because understanding debt-to-income ratios helps evaluate long-term financial burden and equity impacts.
+
+This project seeks to answer:
+- How have average tuition costs changed over the past 20-30 years?
+- How has student loan debt changed over the same period?
+- How have median student/household incomes changed over time?
+- Does tuition growth correlate with student loan debt growth?
+- Has student loan debt grown faster than income?
+- How has affordability changed?
+	- Tuition as a percentage of median income
+	- Average debt as a percentage of median income
+- Are certain income groups disproportionately affected?
+
+What an answer could look like:
+
+TUITION VS INCOME OVER TIME (LINE CHART)
+```text
+Income ↑
+$90k |                               _____________
+$80k |                        ______/
+$70k |                 ______/
+$60k |          ______/
+$50k |   ______/
+$40k |__/
+       2000   2005   2010   2015   2020   2025
+
+Tuition ↑
+$14k |                               __________________
+$12k |                        ______/
+$10k |                 ______/
+ $8k |          ______/
+ $6k |   ______/
+ $4k |__/
+```
+
+Interpretation: Tuition rises faster than income, leading to a decline in affordability
+
+
 
 ## Self Assessment and Reflection
 
