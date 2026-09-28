@@ -22,20 +22,24 @@ This project seeks to answer:
 What an answer could look like:
 
 TUITION VS INCOME OVER TIME (LINE CHART)
+```text
 Income ↑
-$80k |                         ________
-$70k |                 _______/ 
-$60k |        ________/ 
-$50k |_______/ 
-$40k |
+$90k |                               _____________
+$80k |                        ______/
+$70k |                 ______/
+$60k |          ______/
+$50k |   ______/
+$40k |__/
        2000   2005   2010   2015   2020   2025
 
 Tuition ↑
-$12k |                       __________
-$10k |                ______/
- $8k |         ______/
- $6k |  ______/
- $4k |
+$14k |                               __________________
+$12k |                        ______/
+$10k |                 ______/
+ $8k |          ______/
+ $6k |   ______/
+ $4k |__/
+```
 
 Interpretation: Tuition rises faster than income, leading to a decline in affordability
 
