@@ -419,10 +419,3 @@ df["Median_Income"] = pd.to_numeric(
 # ⚠️ Make sure you run this cell at the end of your notebook before every submission!
 get_ipython().system('jupyter nbconvert --to python source.ipynb')
 
-
-# In[6]:
-
-
-import sys
-get_ipython().system('{sys.executable} -m jupyter nbconvert --to python YourNotebook.ipynb')
-
