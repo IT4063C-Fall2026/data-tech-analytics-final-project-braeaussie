@@ -59,7 +59,7 @@
 # *How will you use the identified data to answer your project question?*
 # 📝 <!-- Start Discussing the project here; you can add as many code cells as you need -->
 
-# In[2]:
+# In[36]:
 
 
 #import
@@ -71,19 +71,30 @@ import requests
 import matplotlib.pyplot as plt
 import seaborn as sns
 import jupyter
+import sklearn
+from sklearn.model_selection import train_test_split
+from sklearn.pipeline import Pipeline
+from sklearn.impute import SimpleImputer
+from sklearn.preprocessing import StandardScaler, OneHotEncoder
+from sklearn.linear_model import LinearRegression
+from sklearn.linear_model import Ridge
+from sklearn.ensemble import RandomForestRegressor
+from sklearn.metrics import mean_squared_error, r2_score, mean_absolute_error
+from statsmodels.stats.outliers_influence import variance_inflation_factor
+
 
 load_dotenv(dotenv_path=r"C:\Users\braea\OneDrive\Documents\GitHub\data-tech-analytics-final-project-braeaussie\.env")
 load_dotenv(override=True)
 
 
-# In[ ]:
+# In[2]:
 
 
 fred_api_key = os.getenv("FRED_API_KEY")
 census_api_key = os.getenv("CENSUS_API_KEY")
 
 
-# In[ ]:
+# In[3]:
 
 
 # Load Data
@@ -125,14 +136,14 @@ income = (
 )
 
 
-# In[ ]:
+# In[4]:
 
 
 # Rename Tuition Academic Year --> Year
 tuition = tuition.rename(columns={"Academic Year": "Year"})
 
 
-# In[ ]:
+# In[5]:
 
 
 # Convert Academic Years
@@ -148,7 +159,7 @@ tuition["Year"] = (
 )
 
 
-# In[ ]:
+# In[6]:
 
 
 df = tuition.merge(loan_debt, on="Year").merge(
@@ -158,7 +169,7 @@ df = tuition.merge(loan_debt, on="Year").merge(
 )
 
 
-# In[ ]:
+# In[7]:
 
 
 # Save final dataset
@@ -168,14 +179,14 @@ print(df.head())
 print(df.info())
 
 
-# In[ ]:
+# In[8]:
 
 
 # Remove Unnamed/Unnecessary Columns
 df = df.loc[:, ~df.columns.str.contains('^Unnamed')]
 
 
-# In[ ]:
+# In[9]:
 
 
 # Rename Columns
@@ -189,7 +200,7 @@ df = df.rename(columns={
 })
 
 
-# In[ ]:
+# In[10]:
 
 
 # Add Average Tuition Columns
@@ -218,7 +229,7 @@ df["Average Tuition in 2025 Dollars"] = (
 )
 
 
-# In[ ]:
+# In[11]:
 
 
 # Initial Data Inspection
@@ -235,7 +246,7 @@ df.describe()
 df.head()
 
 
-# In[ ]:
+# In[12]:
 
 
 # Tuition Over Time Line Chart
@@ -251,7 +262,7 @@ plt.show()
 # Tuition is expected to increase steadily over time, indicating rising educational costs.
 
 
-# In[ ]:
+# In[13]:
 
 
 # Student Loan Debt Over Time Line Chart
@@ -274,7 +285,7 @@ plt.show()
 # Allows comparison between debt accumulation and tuition growth over time, highlighting the financial burden on students.
 
 
-# In[ ]:
+# In[14]:
 
 
 # Correlation Matrix Heatmap
@@ -303,7 +314,7 @@ plt.show()
 #   -Positive relationship between Income and Tuition.
 
 
-# In[ ]:
+# In[15]:
 
 
 # Distribution Analysis
@@ -335,7 +346,7 @@ plt.show()
 # 
 # . - Affordability may have decreased over time.
 
-# In[ ]:
+# In[16]:
 
 
 # Are there correlations?
@@ -346,14 +357,14 @@ df.corr(numeric_only=True)
 # below 0.3 = weak relationship
 
 
-# In[ ]:
+# In[17]:
 
 
 # Missing Values
 df.isnull().sum()
 
 
-# In[ ]:
+# In[18]:
 
 
 # look for duplicate values
@@ -363,7 +374,7 @@ df.duplicated().sum()
 # df = df.drop_duplicates()
 
 
-# In[ ]:
+# In[19]:
 
 
 # Verify data types
@@ -372,7 +383,7 @@ df.dtypes
 
 # I already did a lot of cleaning before I merged the datasets, so my master dataset doesn't appear to need additional cleaning.
 
-# In[ ]:
+# In[20]:
 
 
 # look for outliers
@@ -384,7 +395,7 @@ sns.boxplot(data=df[[
 ]])
 
 
-# In[ ]:
+# In[21]:
 
 
 # Convert Data Types
@@ -409,13 +420,203 @@ df["Median_Income"] = pd.to_numeric(
 # 
 # My main challenge with this project is that I only have data from 1986-2025. Then, when I merged all of my datasets, it cut off anything before 2006. The problem with this is that smaller datsets limit model complexity. Another challenge is that the average tuition and year may be highly correlated, which would be multicollinearity because both variables are independent predictor variables. This can lead to inflated standard errors, unreliable p-values, unstable coefficients, or loss of interpretability. For example, if the average and tuition are correlated with each other, the model may struggle to determine if rising debt levels are caused by increasing tuition, the passage of time, or both. To address this issue, correlation analysis and Variance Inflation Factor (VIF) testing will be conducted. If severe multicollinearity is detected, highly correlated variables may be removed or Ridge Regression may be used to reduce its effects.
 
+# In[22]:
+
+
+#train data and test data
+# Split the data into training and testing sets
+
+X = df[["Average Tuition in 2025 Dollars", "Median_Income", "Year"]]
+
+y = df["Student_Loan_Debt"]
+
+X_train, X_test, y_train, y_test = train_test_split(
+    X, y, test_size=0.2, random_state=42
+)
+
+
+# In[ ]:
+
+
+# Scikit-Learn Pipeline
+# Create a preprocessing pipeline for numerical features
+# All predictors are numeric, so we only need median imputation and standard scaling. If we had categorical features, we would add OneHotEncoder to the pipeline.
+
+numeric_pipeline = Pipeline([
+    ('imputer', SimpleImputer(strategy='median')),
+    ('scaler', StandardScaler())
+])
+
+
+# In[26]:
+
+
+# Processing Features
+
+X_train_processed = numeric_pipeline.fit_transform(X_train)
+X_test_processed = numeric_pipeline.transform(X_test)
+
+
+# In[29]:
+
+
+# Model 1: Linear Regression
+# Train a linear regression model on the training data
+
+lin_reg = LinearRegression()
+
+lin_reg.fit(X_train_processed, y_train)
+
+lin_pred = lin_reg.predict(X_test_processed)
+
+
+# In[30]:
+
+
+# Model 2: Ridge Regression
+# Train a ridge regression model on the training data
+
+ridge_reg = Ridge(alpha=1.0)
+
+ridge_reg.fit(X_train_processed, y_train)
+
+ridge_pred = ridge_reg.predict(X_test_processed)
+
+
+# In[ ]:
+
+
+# Model 3: Random Forest Regressor
+# Train a random forest regressor model on the training data
+
+rf = RandomForestRegressor(n_estimators=100, random_state=42)
+
+rf.fit(X_train_processed, y_train)
+
+rf_pred = rf.predict(X_test_processed)
+
+
+# In[34]:
+
+
+# Evaluation Metrics
+# Evaluate the models using Mean Squared Error (MSE), R-squared (R2), and Mean Absolute Error (MAE).
+
+def evaluate_model(name, y_true, y_pred):
+
+    rmse = mean_squared_error(y_true, y_pred) ** 0.5  # RMSE
+    r2 = r2_score(y_true, y_pred)
+    mae = mean_absolute_error(y_true, y_pred)
+
+    print(f"{name} Results:")
+    print(f"  RMSE: {rmse:.4f}")
+    print(f"  R2: {r2:.4f}")
+    print(f"  MAE: {mae:.4f}")
+
+evaluate_model("Linear Regression", y_test, lin_pred)
+evaluate_model("Ridge Regression", y_test, ridge_pred)
+evaluate_model("Random Forest Regressor", y_test, rf_pred)
+
+
+# In[37]:
+
+
+# Check Multicollinearity
+# Calculate the Variance Inflation Factor (VIF) for each feature to check for multicollinearity. A VIF above 5-10 indicates high multicollinearity.
+
+vif_df = X.copy()
+
+vif_results = pd.DataFrame()
+vif_results["Feature"] = vif_df.columns
+vif_results["VIF"] = [
+    variance_inflation_factor(
+        vif_df.values, i
+        )
+    for i in range(len(vif_df.columns))
+]
+
+print(vif_results)
+
+
+# The results indicate severe multicollinearity among the predictor variables. This finding is not unexpected, as tuition and household income both tend to increase over time and are therefore strongly correlated with the Year variable. High multicollinearity can inflate coefficient estimates and reduce the interpretability of a linear regression model. To mitigate this issue, Ridge Regression was evaluated as an alternative model because it applies regularization to reduce the impact of highly correlated features while preserving predictive performance.
+
+# In[38]:
+
+
+# Model Comparison Table
+
+results = pd.DataFrame({
+    "Model": ["Linear Regression", "Ridge Regression", "Random Forest Regressor"],
+    "R2 Score": [
+        r2_score(y_test, lin_pred),
+        r2_score(y_test, ridge_pred),
+        r2_score(y_test, rf_pred)
+    ],
+})
+
+print(results)
+
+
+# In[42]:
+
+
+# Actual vs Predicted Visualization
+
+plt.figure(figsize=(10,6))
+plt.scatter(y_test, ridge_pred, color='red', label='Ridge Regression', alpha=0.7)
+plt.plot([y_test.min(), y_test.max()], [y_test.min(), y_test.max()], 'k--', lw=2, label='Perfect Prediction')
+plt.xlabel("Actual Debt Values")
+plt.ylabel("Predicted Debt Values")
+plt.title("Actual vs Predicted Student Loan Debt")
+plt.legend()
+plt.show()
+
+
+# In[ ]:
+
+
+# Feature Importance/Coefficients
+# Shows which variables have the strongest relationship with student loan debt, based on the coefficients from the ridge regression model.
+coef_df = pd.DataFrame({
+    "Feature": X.columns,
+    "Coefficient": ridge_reg.coef_
+})
+
+print(coef_df)
+
+
+# ## Machine Learning Implementation Process:
+# 
+# #### Ask
+# The objective of this project is to determine how rising tuition costs and household income levels relate to student loan debt over time.
+# 
+# #### Prepare
+# Tuition data from the College Board, student loan debt data from FRED, and median household income data from FRED were collected and merged using the Year variable.
+# 
+# #### Process
+# Exploratory Data Analysis (EDA) was performed using summary statistics, visualizations, correlation analysis, missing value checks, duplicate checks, and outlier detection. A Scikit-Learn pipeline was used to prepare the data, including median imputation for missing values and standardization of numeric features. The dataset was then split into training and testing sets.
+# 
+# #### Analyze
+# Multiple machine learning models were trained to predict student loan debt, including Linear Regression, Ridge Regression, and Random Forest Regression. Variance Inflation Factor (VIF) analysis was conducted to assess multicollinearity among predictor variables.
+# 
+# #### Evaluate
+# Models were evaluated using R^2, Mean Absolute Error (MAE), and Root Mean Squared Error (RMSE). Results were compared to determine which model provided the best predictive performance while addressing multicollinearity concerns.
+# 
+# #### Share
+# Model performance metrics, coefficient analysis, correlation visualizations, and prediction results were used to communicate findings regarding the relationship between tuition growth, household income, and student loan debt.
+# 
+
+# ## Prior Feedback and Updates:
+# 
+# I received feedback from Checkpoint 1 to hide my API keys and use the notebook already provided in the project template. I implemented both of these suggestions in my project. I received positive feedback from Checkpoint 2 with no recommendations for changes.
+
 # ## Resources and References
 # *What resources and references have you used for this project?*
 # 📝 <!-- Answer Below -->
 
-# In[3]:
+# In[23]:
 
 
 # ⚠️ Make sure you run this cell at the end of your notebook before every submission!
-get_ipython().system('jupyter nbconvert --to python source.ipynb')
+#!jupyter nbconvert --to python source.ipynb
 
