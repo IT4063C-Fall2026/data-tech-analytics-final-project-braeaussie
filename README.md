@@ -43,7 +43,7 @@ $10k |                 ______/
 
 Interpretation: Tuition rises faster than income, leading to a decline in affordability
 
-
+Three machine learning algorithms are evaluated in this project: Linear Regression, Ridge Regression, and Random Forest Regression. A preprocessing pipeline was implemented using Scikit-Learn to perform data imputation and feature scaling. Model performance was evaluated using Mean Absolute Error (MAE), Root Mean Squared Error (RMSE), and R^2. Variance Inflation Factor (VIF) analysis was also conducted to assess multicollinearity among predictor variables. The model with the highest R^2 and lowest prediction error is selected as the final model. Results are used to evaluate the extent to which tuition growth and household income explain increases in student loan debt over time.
 
 ## Self Assessment and Reflection
 
